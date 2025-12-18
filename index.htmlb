@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Hospital Waste Management</title>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      font-family: Arial;
+      background: #f2f4ff;
+      margin: 0;
+    }
+    header {
+      background: #1f3c88;
+      color: white;
+      padding: 15px;
+      text-align: center;
+    }
+    .container {
+      padding: 20px;
+      max-width: 800px;
+      margin: auto;
+    }
+    input, button {
+      padding: 8px;
+      width: 100%;
+      margin-top: 8px;
+    }
+    button {
+      background: #1f3c88;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #162c66;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background: #dce3ff;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h2>Smart Hospital Waste Management</h2>
+</header>
+
+<div class="container">
+
+  <!-- HOME -->
+  <div id="home">
+    <h3>Welcome</h3>
+    <p>This website helps hospitals manage waste data digitally.</p>
+    <button onclick="showLogin()">Hospital Login</button>
+  </div>
+
+  <!-- LOGIN -->
+  <div id="login" class="hidden">
+    <h3>Hospital Login</h3>
+    <input id="hospitalName" placeholder="Hospital Name">
+    <input id="licenseNo" placeholder="License Number">
+    <button onclick="login()">Login</button>
+    <p id="loginMsg" style="color:red;"></p>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="dashboard" class="hidden">
+    <h3>Waste Bin Dashboard</h3>
+
+    <h4>Add / Update Bin</h4>
+    <input id="binId" placeholder="Bin ID">
+    <input id="binColor" placeholder="Bin Color">
+    <input id="binLocation" placeholder="Location">
+    <input id="binFill" placeholder="Filling Status">
+    <button onclick="saveBin()">Save Bin</button>
+
+    <h4>Bin Data</h4>
+    <table>
+      <thead>
+        <tr>
+          <th>Bin ID</th>
+          <th>Color</th>
+          <th>Location</th>
+          <th>Filling Status</th>
+        </tr>
+      </thead>
+      <tbody id="binTable"></tbody>
+    </table>
+
+    <br>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+</div>
+
+<script>
+  // SAMPLE LICENSE DATA (can be changed)
+  const hospitals = [
+    { name: "City Hospital", license: "LIC123" },
+    { name: "Govt Hospital", license: "GOV456" }
+  ];
+
+  function showLogin() {
+    document.getElementById("home").classList.add("hidden");
+    document.getElementById("login").classList.remove("hidden");
+  }
+
+  function login() {
+    const name = document.getElementById("hospitalName").value;
+    const lic = document.getElementById("licenseNo").value;
+
+    const valid = hospitals.find(h => h.name === name && h.license === lic);
+
+    if (valid) {
+      document.getElementById("login").classList.add("hidden");
+      document.getElementById("dashboard").classList.remove("hidden");
+      loadBins();
+    } else {
+      document.getElementById("loginMsg").innerText = "Invalid hospital or license number";
+    }
+  }
+
+  function saveBin() {
+    let bins = JSON.parse(localStorage.getItem("bins")) || [];
+
+    const bin = {
+      id: document.getElementById("binId").value,
+      color: document.getElementById("binColor").value,
+      location: document.getElementById("binLocation").value,
+      fill: document.getElementById("binFill").value
+    };
+
+    bins.push(bin);
+    localStorage.setItem("bins", JSON.stringify(bins));
+    loadBins();
+  }
+
+  function loadBins() {
+    const table = document.getElementById("binTable");
+    table.innerHTML = "";
+
+    const bins = JSON.parse(localStorage.getItem("bins")) || [];
+
+    bins.forEach(b => {
+      table.innerHTML += `
+        <tr>
+          <td>${b.id}</td>
+          <td>${b.color}</td>
+          <td>${b.location}</td>
+          <td>${b.fill}</td>
+        </tr>`;
+    });
+  }
+
+  function logout() {
+    document.getElementById("dashboard").classList.add("hidden");
+    document.getElementById("home").classList.remove("hidden");
+  }
+</script>
+
+</body>
+  </html>
