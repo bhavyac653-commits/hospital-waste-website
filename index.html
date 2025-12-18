@@ -151,27 +151,60 @@
   }
 
   function loadBins() {
-    const table = document.getElementById("binTable");
-    table.innerHTML = "";
+    <script>
+  // Sample bin data
+  let bins = [
+    { id: "BIN-01", color: "Yellow", location: "Emergency Ward", fill: "Half filled" },
+    { id: "BIN-02", color: "Red", location: "Operation Theatre", fill: "Empty" },
+    { id: "BIN-03", color: "Blue", location: "ICU", fill: "Full" }
+  ];
 
-    const bins = JSON.parse(localStorage.getItem("bins")) || [];
+  // Load bins into table
+  function loadBins() {
+    const tbody = document.getElementById("binTable");
+    tbody.innerHTML = "";
 
     bins.forEach(b => {
-      table.innerHTML += `
-        <tr>
+      tbody.innerHTML += `
+        <tr style="background-color:${
+          b.fill === "Full" ? "#ffcccc" :
+          b.fill === "Half filled" ? "#fff3cd" :
+          "#d4edda"
+        }">
           <td>${b.id}</td>
           <td>${b.color}</td>
           <td>${b.location}</td>
           <td>${b.fill}</td>
-        </tr>`;
+        </tr>
+      `;
     });
   }
 
+  // Automatically update bin status
+  function autoUpdateBins() {
+    const levels = ["Empty", "Half filled", "Full"];
+
+    bins = bins.map(b => {
+      const newFill = levels[Math.floor(Math.random() * levels.length)];
+
+      if (newFill === "Full") {
+        alert("⚠ ALERT: " + b.id + " at " + b.location + " is FULL");
+      }
+
+      return { ...b, fill: newFill };
+    });
+
+    loadBins();
+  }
+
+  // Auto update every 5 seconds
+  setInterval(autoUpdateBins, 5000);
+
+  // Logout function
   function logout() {
     document.getElementById("dashboard").classList.add("hidden");
-    document.getElementById("home").classList.remove("hidden");
+    document.getElementById("login").classList.remove("hidden");
+    document.getElementById("hospitalName").value = "";
+    document.getElementById("licenseNo").value = "";
   }
 </script>
-
-</body>
-  </html>
